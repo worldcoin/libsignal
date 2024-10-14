@@ -1,0 +1,34 @@
+#
+# Copyright (C) 2020-2021 Signal Messenger, LLC.
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+
+[package]
+name = "libsignal-ffi"
+version = "0.58.3"
+authors = ["Signal Messenger LLC"]
+edition = "2021"
+license = "AGPL-3.0-only"
+
+[lib]
+name = "signal_ffi"
+crate-type = ["staticlib"]
+
+[features]
+# Testing the Swift side of this requires compiling with SIGNAL_MEDIA_SUPPORTED enabled for both Swift and C:
+#     swift test -Xswiftc -DSIGNAL_MEDIA_SUPPORTED -Xcc -DSIGNAL_MEDIA_SUPPORTED
+signal-media = ["libsignal-bridge/signal-media"]
+
+[dependencies]
+libsignal-bridge = { path = "../shared", features = ["ffi"] }
+libsignal-bridge-testing = { path = "../shared/testing", features = ["ffi"], optional = true }
+libsignal-net = { path = "../../net" }
+libsignal-protocol = { path = "../../protocol" }
+signal-media = { path = "../../media" }
+
+futures-util = { workspace = true }
+log = { workspace = true }
+log-panics = { workspace = true, features = ["with-backtrace"] }
+
+[target.aarch64-apple-ios.dependencies]
+cpufeatures = "0.2.1" # Make sure iOS gets optimized crypto.

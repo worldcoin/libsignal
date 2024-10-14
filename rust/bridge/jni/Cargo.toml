@@ -1,0 +1,32 @@
+#
+# Copyright (C) 2020-2021 Signal Messenger, LLC.
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+
+[package]
+name = "libsignal-jni"
+version = "0.58.3"
+authors = ["Signal Messenger LLC"]
+edition = "2021"
+license = "AGPL-3.0-only"
+
+[lib]
+name = "signal_jni"
+crate-type = ["cdylib"]
+
+[dependencies]
+libsignal-bridge = { path = "../shared", features = ["jni", "signal-media"] }
+libsignal-protocol = { path = "../../protocol" }
+signal-crypto = { path = "../../crypto" }
+
+cfg-if = { workspace = true }
+jni = { workspace = true }
+log = { workspace = true }
+log-panics = { workspace = true, features = ["with-backtrace"] }
+
+[target.aarch64-linux-android.dependencies]
+cpufeatures = "0.2.2" # Make sure 64-bit Android gets optimized crypto
+
+[target.'cfg(target_os = "android")'.dependencies]
+jni19 = { version = "0.19", package = "jni" }
+rustls-platform-verifier = "0.3.1"
